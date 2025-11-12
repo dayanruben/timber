@@ -1,13 +1,16 @@
+import compat.patrouille.Severity
+
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
 apply plugin: 'com.android.kotlin.multiplatform.library'
 apply plugin: 'com.vanniktech.maven.publish'
 apply plugin: 'org.jetbrains.dokka' // Must be applied here for publish plugin.
+apply plugin: 'com.gradleup.compat.patrouille'
 
 kotlin {
   androidLibrary {
-    namespace 'timber.log'
-    compileSdk libs.versions.compileSdk.get().toInteger()
-    minSdk libs.versions.minSdk.get().toInteger()
+    namespace = 'timber.log'
+    compileSdk = libs.versions.compileSdk.get().toInteger()
+    minSdk = libs.versions.minSdk.get().toInteger()
 
     optimization {
       // "it" --> https://issuetracker.google.com/issues/445115242
@@ -18,9 +21,6 @@ kotlin {
       it.textReport = true
     }
   }
-
-  // TODO Remove!
-  jvmToolchain(17)
 
   sourceSets {
     commonMain {
@@ -41,6 +41,13 @@ kotlin {
   abiValidation {
     enabled = true
   }
+}
+
+compatPatrouille {
+  java(8)
+  kotlin('2.0.0')
+  checkApiDependencies(Severity.ERROR)
+  checkRuntimeDependencies(Severity.ERROR)
 }
 
 tasks.named('check') { check ->
